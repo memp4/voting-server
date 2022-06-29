@@ -20,10 +20,16 @@ function getWinners(vote: AnyMap): string[] {
 
 export function next(state: AnyMap): AnyMap {
     const entries = state.get('entries').concat(getWinners(state.get('vote')));
-    return state.merge({
-        vote: Map({ pair: entries.take(2) }),
-        entries: entries.skip(2) //returns List with undefined values
-    });
+    if (entries.size === 1) {
+        return state.remove('vote')
+            .remove('entries')
+            .set('winner', entries.first());
+    } else {
+        return state.merge({
+            vote: Map({ pair: entries.take(2) }),
+            entries: entries.skip(2) //returns List with undefined values
+        });
+    }
 }
 
 export function vote(state: AnyMap, entry: string): AnyMap {
