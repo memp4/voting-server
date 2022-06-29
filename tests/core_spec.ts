@@ -81,6 +81,26 @@ describe('app logic', () => {
             expect(check).to.be.true;
         });
 
+        it('when one entry left makes it winner', () => {
+            const state = Map({
+                vote: Map({
+                    pair: List.of('Squid Game', 'The Machinist'),
+                    tally: Map({
+                        'Squid Game': 3,
+                        'The Machinist': 2
+                    })
+                }),
+                entries: List()
+            });
+            const nextState = next(state);
+
+            const check =Immutable.is(nextState, Map({
+                winner: 'Squid Game'
+            }));
+
+            expect(check).to.be.true;
+        });
+
     });
 
     describe('vote(), return redux store with tallies', () => {
