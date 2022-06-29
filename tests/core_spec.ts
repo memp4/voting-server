@@ -10,7 +10,7 @@ describe('app logic', () => {
             const entries = ['Squid Game', 'The Machinist'];
             const nextState = setEntries(state, entries);
 
-            const check = Immutable.is( nextState, Map({
+            const check = Immutable.is(nextState, Map({
                 entries: List.of('Squid Game', 'The Machinist')
             }));
 
@@ -19,7 +19,7 @@ describe('app logic', () => {
     });
 
     describe('next(), return store with vote branch and new pair', () => {
-        it('is next() return correct data', () => {
+        it('return new store with voting pair', () => {
             const entries = List(['Squid Game', 'The Machinist', 'American Hustle']);
             const state = Map({
                 entries: entries
@@ -35,7 +35,54 @@ describe('app logic', () => {
 
             expect(check).to.be.true;
         });
+        it('gets winner and pushes in the end of list, then goes to next voting pair', () => {
+            const state = Map({
+                vote: Map({
+                    pair: List.of('Squid Game', 'The Machinist'),
+                    tally: Map({
+                        'Squid Game': 4,
+                        'The Machinist': 2
+                    })
+                }),
+                entries: List.of('Shrek', 'Fight Club', 'Forrest Gump')
+            });
+
+            const nextState = next(state);
+            const check = Immutable.is(nextState, Map({
+                vote: Map({
+                    pair: List.of('Shrek', 'Fight Club'),
+                }),
+                entries: List.of('Forrest Gump', 'Squid Game')
+            }));
+
+            expect(check).to.be.true;
+        });
+
+        it('draw pushes both elements in the end of list, then goes to next voting pair', () => {
+            const state = Map({
+                vote: Map({
+                    pair: List.of('Squid Game', 'The Machinist'),
+                    tally: Map({
+                        'Squid Game': 2,
+                        'The Machinist': 2
+                    })
+                }),
+                entries: List.of('Shrek', 'Fight Club', 'Forrest Gump')
+            });
+
+            const nextState = next(state);
+            const check = Immutable.is(nextState, Map({
+                vote: Map({
+                    pair: List.of('Shrek', 'Fight Club'),
+                }),
+                entries: List.of('Forrest Gump', 'Squid Game', 'The Machinist')
+            }));
+
+            expect(check).to.be.true;
+        });
+
     });
+
     describe('vote(), return redux store with tallies', () => {
         it('adds new tally property in vote branch', () => {
             const state = Map({
@@ -85,7 +132,6 @@ describe('app logic', () => {
             }));
 
             expect(check).to.be.true;
-
         });
     });
 });
