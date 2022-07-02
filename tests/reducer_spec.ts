@@ -54,4 +54,30 @@ describe('reducer', () => {
 
         expect(check).to.be.true;
     });
+
+    it('reduce initial state', () => {
+        const action: Action = { type: 'SET_ENTRIES', content: ['Tenet'] };
+        const nextState = reducer(undefined, action);
+        const check = Immutable.is(nextState, fromJS({
+            entries: ['Tenet']
+        }));
+
+        expect(check).to.be.true;
+    });
+
+    it('voting cycle through the reducer', () => {
+        const actions: Action[] = [
+            { type: 'SET_ENTRIES', content: ['Tenet', 'Forrest Gump'] },
+            { type: 'NEXT' },
+            { type: 'VOTE', content: 'Tenet' },
+            { type: 'VOTE', content: 'Forrest Gump' },
+            { type: 'VOTE', content: 'Tenet' },
+            { type: 'NEXT' }
+        ];
+        const finalState = actions.reduce(reducer, Map());
+        const check = Immutable.is(finalState, fromJS({
+            winner: 'Tenet'
+        }));
+        expect(check).to.be.true;
+    });
 });
