@@ -1,4 +1,4 @@
-import Immutable, { Map, List, Collection } from 'immutable';
+import { Map, List } from 'immutable';
 
 // Define type for Redux store branches?
 // interface ReduxStore = {}
